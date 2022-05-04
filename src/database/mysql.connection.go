@@ -2,8 +2,7 @@ package database
 
 import (
 	"fmt"
-	"github.com/samithiwat/samithiwat-backend-role/src/config"
-	"github.com/samithiwat/samithiwat-backend-role/src/model"
+	"github.com/samithiwat/samithiwat-backend-organization/src/config"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 	"strconv"
@@ -17,7 +16,7 @@ func InitDatabase(conf *config.Database) (gormDb *gorm.DB, err error) {
 		return
 	}
 
-	err = gormDb.AutoMigrate(model.Permission{}, model.Role{})
+	err = gormDb.AutoMigrate()
 	if err != nil {
 		return
 	}
