@@ -108,26 +108,6 @@ func TestCreateTeam(t *testing.T) {
 	assert.Equal(want, teamRes)
 }
 
-func TestCreateDuplicatedTeam(t *testing.T) {
-	mock.InitializeMockTeam()
-
-	errors := []string{"Duplicate team"}
-
-	assert := assert.New(t)
-
-	want := &proto.TeamResponse{
-		Data:       nil,
-		Errors:     errors,
-		StatusCode: http.StatusUnprocessableEntity,
-	}
-
-	teamService := service.NewTeamService(&mock.TeamMockErrRepo{})
-	teamRes, err := teamService.Create(mock.Context{}, &mock.CreateTeamReqMock)
-
-	assert.True(err != nil, "Must got an error")
-	assert.Equal(want, teamRes)
-}
-
 func TestUpdateTeam(t *testing.T) {
 	mock.InitializeMockTeam()
 

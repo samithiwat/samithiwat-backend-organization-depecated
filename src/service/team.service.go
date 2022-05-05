@@ -32,7 +32,7 @@ func (s *TeamService) FindAll(_ context.Context, req *proto.FindAllTeamRequest) 
 		CurrentPage:  req.Page,
 	}
 
-	var teams []*model.Team
+	var ts []*model.Team
 	var errors []string
 
 	res = &proto.TeamListResponse{
@@ -44,7 +44,7 @@ func (s *TeamService) FindAll(_ context.Context, req *proto.FindAllTeamRequest) 
 		StatusCode: http.StatusOK,
 	}
 
-	err = s.repository.FindAll(&meta, &teams)
+	err = s.repository.FindAll(&meta, &ts)
 	if err != nil {
 		errors = append(errors, err.Error())
 		res.StatusCode = http.StatusBadRequest
@@ -53,8 +53,8 @@ func (s *TeamService) FindAll(_ context.Context, req *proto.FindAllTeamRequest) 
 
 	var result []*proto.Team
 
-	for _, team := range teams {
-		result = append(result, RawToDtoTeam(team))
+	for _, t := range ts {
+		result = append(result, RawToDtoTeam(t))
 	}
 
 	res.Data.Items = result
@@ -63,7 +63,7 @@ func (s *TeamService) FindAll(_ context.Context, req *proto.FindAllTeamRequest) 
 }
 
 func (s *TeamService) FindOne(_ context.Context, req *proto.FindOneTeamRequest) (res *proto.TeamResponse, err error) {
-	team := model.Team{}
+	t := model.Team{}
 	var errors []string
 
 	res = &proto.TeamResponse{
@@ -72,27 +72,84 @@ func (s *TeamService) FindOne(_ context.Context, req *proto.FindOneTeamRequest) 
 		StatusCode: http.StatusOK,
 	}
 
-	err = s.repository.FindOne(uint(req.Id), &team)
+	err = s.repository.FindOne(uint(req.Id), &t)
 	if err != nil {
 		res.Errors = append(errors, err.Error())
 		res.StatusCode = http.StatusNotFound
 		return
 	}
 
-	result := RawToDtoTeam(&team)
+	result := RawToDtoTeam(&t)
 	res.Data = result
 
 	return
 }
 
 func (s *TeamService) Create(_ context.Context, req *proto.CreateTeamRequest) (res *proto.TeamResponse, err error) {
+	t := DtoToRawTeam(req.Team)
+	var errors []string
+
+	res = &proto.TeamResponse{
+		Data:       nil,
+		Errors:     errors,
+		StatusCode: http.StatusCreated,
+	}
+
+	err = s.repository.Create(t)
+	if err != nil {
+		res.Errors = append(errors, err.Error())
+		res.StatusCode = http.StatusUnprocessableEntity
+		return
+	}
+
+	result := RawToDtoTeam(t)
+	res.Data = result
+
 	return
 }
 
 func (s *TeamService) Update(_ context.Context, req *proto.UpdateTeamRequest) (res *proto.TeamResponse, err error) {
+	t := DtoToRawTeam(req.Team)
+	var errors []string
+
+	res = &proto.TeamResponse{
+		Data:       nil,
+		Errors:     errors,
+		StatusCode: http.StatusOK,
+	}
+
+	err = s.repository.Update(uint(t.ID), t)
+	if err != nil {
+		res.Errors = append(errors, err.Error())
+		res.StatusCode = http.StatusNotFound
+		return
+	}
+
+	result := RawToDtoTeam(t)
+	res.Data = result
+
 	return
 }
 
 func (s *TeamService) Delete(_ context.Context, req *proto.DeleteTeamRequest) (res *proto.TeamResponse, err error) {
+	t := model.Team{}
+	var errors []string
+
+	res = &proto.TeamResponse{
+		Data:       nil,
+		Errors:     errors,
+		StatusCode: http.StatusOK,
+	}
+
+	err = s.repository.Delete(uint(req.Id), &t)
+	if err != nil {
+		res.Errors = append(errors, err.Error())
+		res.StatusCode = http.StatusNotFound
+		return
+	}
+
+	result := RawToDtoTeam(&t)
+	res.Data = result
+
 	return
 }
