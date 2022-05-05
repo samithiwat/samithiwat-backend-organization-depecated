@@ -12,3 +12,11 @@ func RawToDtoTeam(team *model.Team) *proto.Team {
 		Description: team.Description,
 	}
 }
+
+func RawToDtoOrganization(org *model.Organization) *proto.Organization {
+	return &proto.Organization{
+		Id:          uint32(org.ID),
+		Name:        org.Name,
+		Description: org.Description,
+	}
+}

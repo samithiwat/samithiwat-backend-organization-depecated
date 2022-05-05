@@ -1,0 +1,121 @@
+package mock
+
+import (
+	"github.com/bxcodec/faker/v3"
+	"github.com/pkg/errors"
+	"github.com/samithiwat/samithiwat-backend-organization/src/model"
+	"github.com/samithiwat/samithiwat-backend-organization/src/proto"
+)
+
+var Org1 model.Organization
+var Org2 model.Organization
+var Org3 model.Organization
+var Org4 model.Organization
+var Orgs []*model.Organization
+var CreateOrganizationReqMock proto.CreateOrganizationRequest
+var UpdateOrganizationReqMock proto.UpdateOrganizationRequest
+
+type OrganizationMockRepo struct {
+}
+
+func (r *OrganizationMockRepo) FindAll(meta *proto.PaginationMetadata, orgs *[]*model.Organization) error {
+	meta.CurrentPage = 1
+	meta.TotalPage = 1
+	meta.ItemCount = 4
+	meta.TotalItem = 4
+	meta.ItemsPerPage = 10
+
+	*orgs = Orgs
+
+	return nil
+}
+
+func (r *OrganizationMockRepo) FindOne(_ int, orgs *model.Organization) error {
+	*orgs = Org1
+	return nil
+}
+
+func (r *OrganizationMockRepo) Create(org *model.Organization) error {
+	*org = Org1
+	return nil
+}
+
+func (r *OrganizationMockRepo) Update(_ int, org *model.Organization) error {
+	*org = Org1
+	return nil
+}
+
+func (r *OrganizationMockRepo) Delete(_ int, org *model.Organization) error {
+	*org = Org1
+	return nil
+}
+
+type OrganizationMockErrRepo struct {
+}
+
+func (r *OrganizationMockErrRepo) FindAll(*proto.PaginationMetadata, *[]*model.Organization) error {
+	return nil
+}
+
+func (r *OrganizationMockErrRepo) FindOne(int, *model.Organization) error {
+	return errors.New("Not found organization")
+}
+
+func (r *OrganizationMockErrRepo) Create(*model.Organization) error {
+	return nil
+}
+
+func (r *OrganizationMockErrRepo) Update(int, *model.Organization) error {
+	return errors.New("Not found organization")
+}
+
+func (r *OrganizationMockErrRepo) Delete(int, *model.Organization) error {
+	return errors.New("Not found organization")
+}
+
+func InitializeMockOrganization() (err error) {
+	Org1 = model.Organization{
+		Name:        faker.Name(),
+		Description: faker.Paragraph(),
+	}
+
+	Org2 = model.Organization{
+		Name:        faker.Name(),
+		Description: faker.Paragraph(),
+	}
+
+	Org3 = model.Organization{
+		Name:        faker.Name(),
+		Description: faker.Paragraph(),
+	}
+
+	Org4 = model.Organization{
+		Name:        faker.Name(),
+		Description: faker.Paragraph(),
+	}
+
+	CreateOrganizationReqMock = proto.CreateOrganizationRequest{
+		Organization: &proto.Organization{
+			Name:        Org1.Name,
+			Description: Org1.Description,
+		},
+	}
+	if err != nil {
+		panic("Error occur while mocking data")
+	}
+
+	UpdateOrganizationReqMock = proto.UpdateOrganizationRequest{
+		Organization: &proto.Organization{
+			Id:          uint32(Org1.ID),
+			Name:        Org1.Name,
+			Description: Org1.Description,
+		},
+	}
+	if err != nil {
+		panic("Error occur while mocking data")
+	}
+
+	Orgs = append(Orgs, &Org1, &Org2, &Org3, &Org4)
+
+	return nil
+}
