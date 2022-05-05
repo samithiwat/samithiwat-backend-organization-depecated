@@ -7,6 +7,9 @@ import (
 	"github.com/samithiwat/samithiwat-backend-organization/src/config"
 	"github.com/samithiwat/samithiwat-backend-organization/src/database"
 	seed "github.com/samithiwat/samithiwat-backend-organization/src/database/seeds"
+	"github.com/samithiwat/samithiwat-backend-organization/src/proto"
+	"github.com/samithiwat/samithiwat-backend-organization/src/repository"
+	"github.com/samithiwat/samithiwat-backend-organization/src/service"
 	"google.golang.org/grpc"
 	"gorm.io/gorm"
 	"log"
@@ -81,7 +84,12 @@ func main() {
 		log.Fatalf("failed to listen: %v", err)
 	}
 
+	tRepo := repository.NewTeamRepository(db)
+	tSrv := service.NewTeamService(tRepo)
+
 	grpcServer := grpc.NewServer()
+
+	proto.RegisterTeamServiceServer(grpcServer, tSrv)
 
 	go func() {
 		fmt.Println(fmt.Sprintf("samithiwat user service starting at port %v", conf.App.Port))
