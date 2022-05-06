@@ -30,7 +30,7 @@ func (r *OrganizationMockRepo) FindAll(meta *proto.PaginationMetadata, orgs *[]*
 	return nil
 }
 
-func (r *OrganizationMockRepo) FindOne(_ int, orgs *model.Organization) error {
+func (r *OrganizationMockRepo) FindOne(_ uint, orgs *model.Organization) error {
 	*orgs = Org1
 	return nil
 }
@@ -40,12 +40,12 @@ func (r *OrganizationMockRepo) Create(org *model.Organization) error {
 	return nil
 }
 
-func (r *OrganizationMockRepo) Update(_ int, org *model.Organization) error {
+func (r *OrganizationMockRepo) Update(_ uint, org *model.Organization) error {
 	*org = Org1
 	return nil
 }
 
-func (r *OrganizationMockRepo) Delete(_ int, org *model.Organization) error {
+func (r *OrganizationMockRepo) Delete(_ uint, org *model.Organization) error {
 	*org = Org1
 	return nil
 }
@@ -57,7 +57,7 @@ func (r *OrganizationMockErrRepo) FindAll(*proto.PaginationMetadata, *[]*model.O
 	return nil
 }
 
-func (r *OrganizationMockErrRepo) FindOne(int, *model.Organization) error {
+func (r *OrganizationMockErrRepo) FindOne(uint, *model.Organization) error {
 	return errors.New("Not found organization")
 }
 
@@ -65,11 +65,11 @@ func (r *OrganizationMockErrRepo) Create(*model.Organization) error {
 	return nil
 }
 
-func (r *OrganizationMockErrRepo) Update(int, *model.Organization) error {
+func (r *OrganizationMockErrRepo) Update(uint, *model.Organization) error {
 	return errors.New("Not found organization")
 }
 
-func (r *OrganizationMockErrRepo) Delete(int, *model.Organization) error {
+func (r *OrganizationMockErrRepo) Delete(uint, *model.Organization) error {
 	return errors.New("Not found organization")
 }
 
