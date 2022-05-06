@@ -22,7 +22,7 @@ func TestFindAllOrganization(t *testing.T) {
 
 	var errors []string
 
-	want := &proto.OrganizationListResponse{
+	want := &proto.OrganizationPaginationResponse{
 		Data: &proto.OrganizationPagination{
 			Items: result,
 			Meta: &proto.PaginationMetadata{
@@ -84,6 +84,32 @@ func TestFindOneErrNotFoundOrganization(t *testing.T) {
 	orgRes, err := orgService.FindOne(mock.Context{}, &proto.FindOneOrganizationRequest{Id: 1})
 
 	assert.True(err != nil, "Must got an error")
+	assert.Equal(want, orgRes)
+}
+
+func TestFindMultiOrganization(t *testing.T) {
+	mock.InitializeMockOrganization()
+
+	var result []*proto.Organization
+	for _, org := range mock.Orgs {
+		result = append(result, RawToDtoOrganization(org))
+	}
+
+	var errors []string
+
+	assert := assert.New(t)
+	want := &proto.OrganizationListResponse{
+		Data:       result,
+		Errors:     errors,
+		StatusCode: http.StatusOK,
+	}
+
+	orgService := service.NewOrganizationService(&mock.OrganizationMockRepo{})
+	orgRes, err := orgService.FindMulti(mock.Context{}, &proto.FindMultiOrganizationRequest{Ids: []uint32{1, 2, 3, 4, 5}})
+	if err != nil {
+		t.Errorf("Got an error")
+	}
+
 	assert.Equal(want, orgRes)
 }
 

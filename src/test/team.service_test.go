@@ -22,7 +22,7 @@ func TestFindAllTeam(t *testing.T) {
 
 	var errors []string
 
-	want := &proto.TeamListResponse{
+	want := &proto.TeamPaginationResponse{
 		Data: &proto.TeamPagination{
 			Items: result,
 			Meta: &proto.PaginationMetadata{
@@ -85,6 +85,32 @@ func TestFindOneErrNotFoundTeam(t *testing.T) {
 
 	assert.True(err != nil, "Must got an error")
 	assert.Equal(want, teamRes)
+}
+
+func TestFindMultiTeam(t *testing.T) {
+	mock.InitializeMockTeam()
+
+	var result []*proto.Team
+	for _, t := range mock.Teams {
+		result = append(result, RawToDtoTeam(t))
+	}
+
+	var errors []string
+
+	assert := assert.New(t)
+	want := &proto.TeamListResponse{
+		Data:       result,
+		Errors:     errors,
+		StatusCode: http.StatusOK,
+	}
+
+	tService := service.NewTeamService(&mock.TeamMockRepo{})
+	tRes, err := tService.FindMulti(mock.Context{}, &proto.FindMultiTeamRequest{Ids: []uint32{1, 2, 3, 4, 5}})
+	if err != nil {
+		t.Errorf("Got an error")
+	}
+
+	assert.Equal(want, tRes)
 }
 
 func TestCreateTeam(t *testing.T) {
