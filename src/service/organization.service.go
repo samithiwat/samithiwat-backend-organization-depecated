@@ -14,6 +14,7 @@ type OrganizationService struct {
 type OrganizationRepository interface {
 	FindAll(*proto.PaginationMetadata, *[]*model.Organization) error
 	FindOne(uint, *model.Organization) error
+	FindMulti([]uint32, *[]*model.Organization) error
 	Create(*model.Organization) error
 	Update(uint, *model.Organization) error
 	Delete(uint, *model.Organization) error
@@ -23,7 +24,7 @@ func NewOrganizationService(repository OrganizationRepository) *OrganizationServ
 	return &OrganizationService{repository: repository}
 }
 
-func (s *OrganizationService) FindAll(_ context.Context, req *proto.FindAllOrganizationRequest) (res *proto.OrganizationListResponse, err error) {
+func (s *OrganizationService) FindAll(_ context.Context, req *proto.FindAllOrganizationRequest) (res *proto.OrganizationPaginationResponse, err error) {
 
 	meta := proto.PaginationMetadata{
 		ItemsPerPage: req.Limit,
@@ -33,7 +34,7 @@ func (s *OrganizationService) FindAll(_ context.Context, req *proto.FindAllOrgan
 	var orgs []*model.Organization
 	var errors []string
 
-	res = &proto.OrganizationListResponse{
+	res = &proto.OrganizationPaginationResponse{
 		Data: &proto.OrganizationPagination{
 			Items: nil,
 			Meta:  &meta,
@@ -79,6 +80,33 @@ func (s *OrganizationService) FindOne(_ context.Context, req *proto.FindOneOrgan
 
 	result := RawToDtoOrganization(&org)
 	res.Data = result
+	return
+}
+
+func (s *OrganizationService) FindMulti(_ context.Context, req *proto.FindMultiOrganizationRequest) (res *proto.OrganizationListResponse, err error) {
+	var orgs []*model.Organization
+	var errors []string
+
+	res = &proto.OrganizationListResponse{
+		Data:       nil,
+		Errors:     errors,
+		StatusCode: http.StatusOK,
+	}
+
+	err = s.repository.FindMulti(req.Ids, &orgs)
+	if err != nil {
+		res.Errors = append(errors, err.Error())
+		res.StatusCode = http.StatusNotFound
+		return
+	}
+
+	var result []*proto.Organization
+	for _, org := range orgs {
+		result = append(result, RawToDtoOrganization(org))
+	}
+
+	res.Data = result
+
 	return
 }
 
