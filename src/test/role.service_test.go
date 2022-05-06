@@ -30,7 +30,7 @@ func TestFindOneRole(t *testing.T) {
 	assert.Equal(want, roleRes)
 }
 
-func TestFindOneErrNotFoundRole(t *testing.T) {
+func TestFindOneErrGrpcRole(t *testing.T) {
 	mock.InitializeMockRole()
 
 	errors := []string{"Not found role", "Grpc error"}
@@ -49,7 +49,7 @@ func TestFindOneErrNotFoundRole(t *testing.T) {
 	assert.Equal(want, roleRes)
 }
 
-func TestFindMulti(t *testing.T) {
+func TestFindMultiRole(t *testing.T) {
 	mock.InitializeMockRole()
 
 	var errors []string

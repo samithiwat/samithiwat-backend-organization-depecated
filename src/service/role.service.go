@@ -16,11 +16,11 @@ func NewRoleService(client proto.RoleServiceClient) *RoleService {
 	}
 }
 
-func (c *RoleService) FindOne(id uint) (res *proto.RoleResponse, err error) {
+func (s *RoleService) FindOne(id uint) (res *proto.RoleResponse, err error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 
-	res, err = c.client.FindOne(ctx, &proto.FindOneRoleRequest{Id: int32(id)})
+	res, err = s.client.FindOne(ctx, &proto.FindOneRoleRequest{Id: int32(id)})
 	if err != nil {
 		res.Errors = append(res.Errors, err.Error())
 		return
@@ -29,11 +29,11 @@ func (c *RoleService) FindOne(id uint) (res *proto.RoleResponse, err error) {
 	return
 }
 
-func (c *RoleService) FindMulti(ids []uint32) (res *proto.RoleListResponse, err error) {
+func (s *RoleService) FindMulti(ids []uint32) (res *proto.RoleListResponse, err error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 
-	res, err = c.client.FindMulti(ctx, &proto.FindMultiRoleRequest{Ids: ids})
+	res, err = s.client.FindMulti(ctx, &proto.FindMultiRoleRequest{Ids: ids})
 	if err != nil {
 		res.Errors = append(res.Errors, err.Error())
 		return
