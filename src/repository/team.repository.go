@@ -23,6 +23,10 @@ func (r *TeamRepository) FindOne(id uint, perm *model.Team) error {
 	return r.db.Preload(clause.Associations).First(&perm, id).Error
 }
 
+func (r *TeamRepository) FindMulti(ids []uint32, teams *[]*model.Team) error {
+	return r.db.Where("id IN ?", ids).Find(&teams).Error
+}
+
 func (r *TeamRepository) Create(perm *model.Team) error {
 	return r.db.Create(&perm).Error
 }
