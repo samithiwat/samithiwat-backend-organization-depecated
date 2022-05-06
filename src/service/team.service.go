@@ -10,6 +10,7 @@ import (
 type TeamRepository interface {
 	FindAll(*proto.PaginationMetadata, *[]*model.Team) error
 	FindOne(uint, *model.Team) error
+	FindMulti([]uint32, *[]*model.Team) error
 	Create(*model.Team) error
 	Update(uint, *model.Team) error
 	Delete(uint, *model.Team) error
@@ -25,7 +26,7 @@ func NewTeamService(repository TeamRepository) *TeamService {
 	}
 }
 
-func (s *TeamService) FindAll(_ context.Context, req *proto.FindAllTeamRequest) (res *proto.TeamListResponse, err error) {
+func (s *TeamService) FindAll(_ context.Context, req *proto.FindAllTeamRequest) (res *proto.TeamPaginationResponse, err error) {
 
 	meta := proto.PaginationMetadata{
 		ItemsPerPage: req.Limit,
@@ -35,7 +36,7 @@ func (s *TeamService) FindAll(_ context.Context, req *proto.FindAllTeamRequest) 
 	var ts []*model.Team
 	var errors []string
 
-	res = &proto.TeamListResponse{
+	res = &proto.TeamPaginationResponse{
 		Data: &proto.TeamPagination{
 			Items: nil,
 			Meta:  &meta,
@@ -58,6 +59,33 @@ func (s *TeamService) FindAll(_ context.Context, req *proto.FindAllTeamRequest) 
 	}
 
 	res.Data.Items = result
+
+	return
+}
+
+func (s *TeamService) FindMulti(_ context.Context, req *proto.FindMultiTeamRequest) (res *proto.TeamListResponse, err error) {
+	var teams []*model.Team
+	var errors []string
+
+	res = &proto.TeamListResponse{
+		Data:       nil,
+		Errors:     errors,
+		StatusCode: http.StatusOK,
+	}
+
+	err = s.repository.FindMulti(req.Ids, &teams)
+	if err != nil {
+		res.Errors = append(errors, err.Error())
+		res.StatusCode = http.StatusNotFound
+		return
+	}
+
+	var result []*proto.Team
+	for _, team := range teams {
+		result = append(result, RawToDtoTeam(team))
+	}
+
+	res.Data = result
 
 	return
 }
