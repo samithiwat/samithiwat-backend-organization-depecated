@@ -4,6 +4,7 @@ import (
 	"github.com/samithiwat/samithiwat-backend-organization/src/model"
 	"github.com/samithiwat/samithiwat-backend-organization/src/proto"
 	"gorm.io/gorm"
+	"gorm.io/gorm/clause"
 )
 
 type TeamRepository struct {
@@ -14,22 +15,22 @@ func NewTeamRepository(db *gorm.DB) *TeamRepository {
 	return &TeamRepository{db: db}
 }
 
-func (r *TeamRepository) FindAll(*proto.PaginationMetadata, *[]*model.Team) error {
-	return nil
+func (r *TeamRepository) FindAll(meta *proto.PaginationMetadata, perms *[]*model.Team) error {
+	return r.db.Scopes(Pagination(perms, meta)).Find(&perms).Count(&meta.ItemCount).Error
 }
 
-func (r *TeamRepository) FindOne(uint, *model.Team) error {
-	return nil
+func (r *TeamRepository) FindOne(id int, perm *model.Team) error {
+	return r.db.Preload(clause.Associations).First(&perm, id).Error
 }
 
-func (r *TeamRepository) Create(*model.Team) error {
-	return nil
+func (r *TeamRepository) Create(perm *model.Team) error {
+	return r.db.Create(&perm).Error
 }
 
-func (r *TeamRepository) Update(uint, *model.Team) error {
-	return nil
+func (r *TeamRepository) Update(id int, perm *model.Team) error {
+	return r.db.Where(id).Updates(&perm).First(&perm).Error
 }
 
-func (r *TeamRepository) Delete(uint, *model.Team) error {
-	return nil
+func (r *TeamRepository) Delete(id int, perm *model.Team) error {
+	return r.db.First(&perm, id).Delete(&model.Team{}).Error
 }
