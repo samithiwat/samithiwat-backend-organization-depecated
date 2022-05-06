@@ -23,6 +23,10 @@ func (r *OrganizationRepository) FindOne(id uint, perm *model.Organization) erro
 	return r.db.Preload(clause.Associations).First(&perm, id).Error
 }
 
+func (r *OrganizationRepository) FindMulti(ids []uint32, orgs *[]*model.Organization) error {
+	return r.db.Where("id IN ?", ids).Find(&orgs).Error
+}
+
 func (r *OrganizationRepository) Create(perm *model.Organization) error {
 	return r.db.Create(&perm).Error
 }
