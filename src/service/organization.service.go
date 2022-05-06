@@ -13,10 +13,10 @@ type OrganizationService struct {
 
 type OrganizationRepository interface {
 	FindAll(*proto.PaginationMetadata, *[]*model.Organization) error
-	FindOne(int, *model.Organization) error
+	FindOne(uint, *model.Organization) error
 	Create(*model.Organization) error
-	Update(int, *model.Organization) error
-	Delete(int, *model.Organization) error
+	Update(uint, *model.Organization) error
+	Delete(uint, *model.Organization) error
 }
 
 func NewOrganizationService(repository OrganizationRepository) *OrganizationService {
@@ -70,7 +70,7 @@ func (s *OrganizationService) FindOne(_ context.Context, req *proto.FindOneOrgan
 		StatusCode: http.StatusOK,
 	}
 
-	err = s.repository.FindOne(int(req.Id), &org)
+	err = s.repository.FindOne(uint(req.Id), &org)
 	if err != nil {
 		res.Errors = append(errors, err.Error())
 		res.StatusCode = http.StatusNotFound
@@ -115,7 +115,7 @@ func (s *OrganizationService) Update(_ context.Context, req *proto.UpdateOrganiz
 		StatusCode: http.StatusOK,
 	}
 
-	err = s.repository.Update(int(org.ID), org)
+	err = s.repository.Update(uint(org.ID), org)
 	if err != nil {
 		res.Errors = append(errors, err.Error())
 		res.StatusCode = http.StatusNotFound
@@ -138,7 +138,7 @@ func (s *OrganizationService) Delete(_ context.Context, req *proto.DeleteOrganiz
 		StatusCode: http.StatusOK,
 	}
 
-	err = s.repository.Delete(int(req.Id), &org)
+	err = s.repository.Delete(uint(req.Id), &org)
 	if err != nil {
 		res.Errors = append(errors, err.Error())
 		res.StatusCode = http.StatusNotFound
