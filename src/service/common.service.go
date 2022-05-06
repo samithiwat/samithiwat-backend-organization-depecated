@@ -21,7 +21,6 @@ func RawToDtoSubTeams(team []*model.Team) []*proto.Team {
 }
 
 func RawToDtoTeam(team *model.Team) *proto.Team {
-
 	subTeams := RawToDtoSubTeams(team.SubTeams)
 
 	return &proto.Team{
@@ -33,10 +32,23 @@ func RawToDtoTeam(team *model.Team) *proto.Team {
 }
 
 func RawToDtoOrganization(org *model.Organization) *proto.Organization {
+	var users []*proto.User
+	for _, member := range org.Members {
+		users = append(users, &proto.User{Id: uint32(member.ID)})
+	}
+
+	var roles []*proto.Role
+	for _, role := range org.Roles {
+		roles = append(roles, &proto.Role{Id: uint32(role.ID)})
+	}
+
 	return &proto.Organization{
 		Id:          uint32(org.ID),
 		Name:        org.Name,
 		Description: org.Description,
+		Teams:       RawToDtoSubTeams(org.Teams),
+		Members:     users,
+		Roles:       roles,
 	}
 }
 
@@ -64,9 +76,25 @@ func DtoToRawTeam(team *proto.Team) *model.Team {
 }
 
 func DtoToRawOrganization(org *proto.Organization) *model.Organization {
+	var users []*model.User
+	for _, member := range org.Members {
+		users = append(users, &model.User{Model: gorm.Model{ID: uint(member.Id)}})
+	}
+
+	var roles []*model.Role
+	for _, role := range org.Roles {
+		roles = append(roles, &model.Role{
+			Model:          gorm.Model{ID: uint(role.Id)},
+			OrganizationID: uint(org.Id),
+		})
+	}
+
 	return &model.Organization{
 		Model:       gorm.Model{ID: uint(org.Id)},
 		Name:        org.Name,
 		Description: org.Description,
+		Teams:       DtoToRawSubTeams(org.Teams),
+		Members:     users,
+		Roles:       roles,
 	}
 }

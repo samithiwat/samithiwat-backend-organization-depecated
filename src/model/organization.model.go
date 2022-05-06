@@ -8,4 +8,5 @@ type Organization struct {
 	Description string  `json:"description"`
 	Teams       []*Team `json:"teams"`
 	Members     []*User `json:"members" gorm:"many2many:user_organization"`
+	Roles       []*Role `json:"roles" `
 }
