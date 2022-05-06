@@ -19,7 +19,7 @@ func (r *OrganizationRepository) FindAll(meta *proto.PaginationMetadata, perms *
 	return r.db.Scopes(Pagination(perms, meta)).Find(&perms).Count(&meta.ItemCount).Error
 }
 
-func (r *OrganizationRepository) FindOne(id int, perm *model.Organization) error {
+func (r *OrganizationRepository) FindOne(id uint, perm *model.Organization) error {
 	return r.db.Preload(clause.Associations).First(&perm, id).Error
 }
 
@@ -27,10 +27,10 @@ func (r *OrganizationRepository) Create(perm *model.Organization) error {
 	return r.db.Create(&perm).Error
 }
 
-func (r *OrganizationRepository) Update(id int, perm *model.Organization) error {
+func (r *OrganizationRepository) Update(id uint, perm *model.Organization) error {
 	return r.db.Where(id).Updates(&perm).First(&perm).Error
 }
 
-func (r *OrganizationRepository) Delete(id int, perm *model.Organization) error {
+func (r *OrganizationRepository) Delete(id uint, perm *model.Organization) error {
 	return r.db.First(&perm, id).Delete(&model.Organization{}).Error
 }

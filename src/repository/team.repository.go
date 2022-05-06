@@ -19,7 +19,7 @@ func (r *TeamRepository) FindAll(meta *proto.PaginationMetadata, perms *[]*model
 	return r.db.Scopes(Pagination(perms, meta)).Find(&perms).Count(&meta.ItemCount).Error
 }
 
-func (r *TeamRepository) FindOne(id int, perm *model.Team) error {
+func (r *TeamRepository) FindOne(id uint, perm *model.Team) error {
 	return r.db.Preload(clause.Associations).First(&perm, id).Error
 }
 
@@ -27,10 +27,10 @@ func (r *TeamRepository) Create(perm *model.Team) error {
 	return r.db.Create(&perm).Error
 }
 
-func (r *TeamRepository) Update(id int, perm *model.Team) error {
+func (r *TeamRepository) Update(id uint, perm *model.Team) error {
 	return r.db.Where(id).Updates(&perm).First(&perm).Error
 }
 
-func (r *TeamRepository) Delete(id int, perm *model.Team) error {
+func (r *TeamRepository) Delete(id uint, perm *model.Team) error {
 	return r.db.First(&perm, id).Delete(&model.Team{}).Error
 }
