@@ -87,9 +87,13 @@ func main() {
 	tRepo := repository.NewTeamRepository(db)
 	tSrv := service.NewTeamService(tRepo)
 
+	orgRepo := repository.NewOrganizationRepository(db)
+	orgSrv := service.NewOrganizationService(orgRepo)
+
 	grpcServer := grpc.NewServer()
 
 	proto.RegisterTeamServiceServer(grpcServer, tSrv)
+	proto.RegisterOrganizationServiceServer(grpcServer, orgSrv)
 
 	go func() {
 		fmt.Println(fmt.Sprintf("samithiwat user service starting at port %v", conf.App.Port))
