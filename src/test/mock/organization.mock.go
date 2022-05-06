@@ -30,8 +30,13 @@ func (r *OrganizationMockRepo) FindAll(meta *proto.PaginationMetadata, orgs *[]*
 	return nil
 }
 
-func (r *OrganizationMockRepo) FindOne(_ uint, orgs *model.Organization) error {
-	*orgs = Org1
+func (r *OrganizationMockRepo) FindOne(_ uint, org *model.Organization) error {
+	*org = Org1
+	return nil
+}
+
+func (r *OrganizationMockRepo) FindMulti(_ []uint32, orgs *[]*model.Organization) error {
+	*orgs = Orgs
 	return nil
 }
 
@@ -59,6 +64,10 @@ func (r *OrganizationMockErrRepo) FindAll(*proto.PaginationMetadata, *[]*model.O
 
 func (r *OrganizationMockErrRepo) FindOne(uint, *model.Organization) error {
 	return errors.New("Not found organization")
+}
+
+func (r *OrganizationMockErrRepo) FindMulti([]uint32, *[]*model.Organization) error {
+	return nil
 }
 
 func (r *OrganizationMockErrRepo) Create(*model.Organization) error {

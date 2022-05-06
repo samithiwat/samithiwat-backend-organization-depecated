@@ -35,6 +35,11 @@ func (r *TeamMockRepo) FindOne(_ uint, team *model.Team) error {
 	return nil
 }
 
+func (r *TeamMockRepo) FindMulti(_ []uint32, teams *[]*model.Team) error {
+	*teams = Teams
+	return nil
+}
+
 func (r *TeamMockRepo) Create(team *model.Team) error {
 	*team = Team1
 	return nil
@@ -59,6 +64,10 @@ func (r *TeamMockErrRepo) FindAll(*proto.PaginationMetadata, *[]*model.Team) err
 
 func (r *TeamMockErrRepo) FindOne(uint, *model.Team) error {
 	return errors.New("Not found team")
+}
+
+func (r *TeamMockErrRepo) FindMulti([]uint32, *[]*model.Team) error {
+	return nil
 }
 
 func (r *TeamMockErrRepo) Create(*model.Team) error {
