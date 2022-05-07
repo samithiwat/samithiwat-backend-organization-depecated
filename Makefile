@@ -6,6 +6,8 @@ proto:
 	protoc --proto_path=src/proto --go_out=plugins=grpc:. organization.proto
 	protoc --proto_path=src/proto --go_out=plugins=grpc:. role.proto
 	protoc --proto_path=src/proto --go_out=plugins=grpc:. permission.proto
+	protoc --proto_path=src/proto --go_out=plugins=grpc:. location.proto
+	protoc --proto_path=src/proto --go_out=plugins=grpc:. contact.proto
 
 test:
 	go test ./src/test
