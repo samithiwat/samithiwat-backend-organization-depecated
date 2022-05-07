@@ -21,13 +21,13 @@ func TestFindOneContact(t *testing.T) {
 		StatusCode: http.StatusOK,
 	}
 
-	locService := service.NewContactService(&mock.ContactMockClient{})
-	locRes, err := locService.FindOne(1)
+	contactService := service.NewContactService(&mock.ContactMockClient{})
+	contactRes, err := contactService.FindOne(1)
 	if err != nil {
 		t.Errorf("Got an error")
 	}
 
-	assert.Equal(want, locRes)
+	assert.Equal(want, contactRes)
 }
 
 func TestFindOneErrGrpcContact(t *testing.T) {
@@ -42,11 +42,11 @@ func TestFindOneErrGrpcContact(t *testing.T) {
 		StatusCode: http.StatusNotFound,
 	}
 
-	locService := service.NewContactService(&mock.ContactMockErrClient{})
-	locRes, err := locService.FindOne(1)
+	contactService := service.NewContactService(&mock.ContactMockErrClient{})
+	contactRes, err := contactService.FindOne(1)
 
 	assert.True(err != nil, "Must got an error")
-	assert.Equal(want, locRes)
+	assert.Equal(want, contactRes)
 }
 
 func TestFindMultiContact(t *testing.T) {
@@ -61,11 +61,11 @@ func TestFindMultiContact(t *testing.T) {
 		StatusCode: http.StatusOK,
 	}
 
-	locService := service.NewContactService(&mock.ContactMockClient{})
-	locRes, err := locService.FindMulti([]uint32{1, 2, 3, 4, 5})
+	contactService := service.NewContactService(&mock.ContactMockClient{})
+	contactRes, err := contactService.FindMulti([]uint32{1, 2, 3, 4, 5})
 	if err != nil {
 		t.Errorf("Got an error")
 	}
 
-	assert.Equal(want, locRes)
+	assert.Equal(want, contactRes)
 }
