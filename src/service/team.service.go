@@ -8,7 +8,7 @@ import (
 )
 
 type TeamRepository interface {
-	FindAll(*proto.PaginationMetadata, *[]*model.Team) error
+	FindAll(*model.TeamPagination) error
 	FindOne(uint, *model.Team) error
 	FindMulti([]uint32, *[]*model.Team) error
 	Create(*model.Team) error
@@ -27,25 +27,27 @@ func NewTeamService(repository TeamRepository) *TeamService {
 }
 
 func (s *TeamService) FindAll(_ context.Context, req *proto.FindAllTeamRequest) (res *proto.TeamPaginationResponse, err error) {
-
-	meta := proto.PaginationMetadata{
-		ItemsPerPage: req.Limit,
-		CurrentPage:  req.Page,
-	}
-
-	var ts []*model.Team
+	var teams []*model.Team
 	var errors []string
+
+	query := model.TeamPagination{
+		Items: &teams,
+		Meta: model.PaginationMetadata{
+			ItemsPerPage: req.Limit,
+			CurrentPage:  req.Page,
+		},
+	}
 
 	res = &proto.TeamPaginationResponse{
 		Data: &proto.TeamPagination{
 			Items: nil,
-			Meta:  &meta,
+			Meta:  nil,
 		},
 		Errors:     errors,
 		StatusCode: http.StatusOK,
 	}
 
-	err = s.repository.FindAll(&meta, &ts)
+	err = s.repository.FindAll(&query)
 	if err != nil {
 		errors = append(errors, err.Error())
 		res.StatusCode = http.StatusBadRequest
@@ -54,11 +56,18 @@ func (s *TeamService) FindAll(_ context.Context, req *proto.FindAllTeamRequest) 
 
 	var result []*proto.Team
 
-	for _, t := range ts {
-		result = append(result, RawToDtoTeam(t))
+	for _, perm := range *query.Items {
+		result = append(result, RawToDtoTeam(perm))
 	}
 
 	res.Data.Items = result
+	res.Data.Meta = &proto.PaginationMetadata{
+		TotalItem:    query.Meta.TotalItem,
+		ItemCount:    query.Meta.ItemCount,
+		ItemsPerPage: query.Meta.ItemsPerPage,
+		TotalPage:    query.Meta.TotalPage,
+		CurrentPage:  query.Meta.CurrentPage,
+	}
 
 	return
 }
