@@ -61,7 +61,7 @@ func (s *OrganizationService) FindAll(_ context.Context, req *proto.FindAllOrgan
 	res.Data.Items = result
 	res.Data.Meta = &proto.PaginationMetadata{
 		TotalItem:    query.Meta.TotalItem,
-		ItemCount:    query.Meta.ItemCount,
+		ItemCount:    int64(len(result)),
 		ItemsPerPage: query.Meta.ItemsPerPage,
 		TotalPage:    query.Meta.TotalPage,
 		CurrentPage:  query.Meta.CurrentPage,
