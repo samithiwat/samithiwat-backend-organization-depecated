@@ -15,7 +15,7 @@ func NewOrganizationRepository(db *gorm.DB) *OrganizationRepository {
 }
 
 func (r *OrganizationRepository) FindAll(pagination *model.OrganizationPagination) error {
-	return r.db.Scopes(Pagination(&pagination.Items, &pagination.Meta, r.db)).Find(&pagination.Items).Count(&pagination.Meta.ItemCount).Error
+	return r.db.Scopes(Pagination(&pagination.Items, &pagination.Meta, r.db)).Find(&pagination.Items).Error
 }
 
 func (r *OrganizationRepository) FindOne(id uint, perm *model.Organization) error {

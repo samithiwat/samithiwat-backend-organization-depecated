@@ -15,7 +15,7 @@ func NewTeamRepository(db *gorm.DB) *TeamRepository {
 }
 
 func (r *TeamRepository) FindAll(pagination *model.TeamPagination) error {
-	return r.db.Scopes(Pagination(&pagination.Items, &pagination.Meta, r.db)).Find(&pagination.Items).Count(&pagination.Meta.ItemCount).Error
+	return r.db.Scopes(Pagination(&pagination.Items, &pagination.Meta, r.db)).Find(&pagination.Items).Error
 }
 
 func (r *TeamRepository) FindOne(id uint, team *model.Team) error {
