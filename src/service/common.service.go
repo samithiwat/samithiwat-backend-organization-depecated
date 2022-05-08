@@ -71,7 +71,6 @@ func DtoToRawTeam(team *proto.Team) *model.Team {
 		Model:       gorm.Model{ID: uint(team.Id)},
 		Name:        team.Name,
 		Description: team.Description,
-		SubTeams:    DtoToRawSubTeams(team.SubTeams),
 	}
 }
 
