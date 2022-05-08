@@ -18,15 +18,14 @@ var UpdateOrganizationReqMock proto.UpdateOrganizationRequest
 type OrganizationMockRepo struct {
 }
 
-func (r *OrganizationMockRepo) FindAll(meta *proto.PaginationMetadata, orgs *[]*model.Organization) error {
-	meta.CurrentPage = 1
-	meta.TotalPage = 1
-	meta.ItemCount = 4
-	meta.TotalItem = 4
-	meta.ItemsPerPage = 10
+func (r *OrganizationMockRepo) FindAll(pagination *model.OrganizationPagination) error {
+	pagination.Meta.CurrentPage = 1
+	pagination.Meta.TotalPage = 1
+	pagination.Meta.ItemCount = 4
+	pagination.Meta.TotalItem = 4
+	pagination.Meta.ItemsPerPage = 10
 
-	*orgs = Orgs
-
+	*pagination.Items = Orgs
 	return nil
 }
 
@@ -58,7 +57,7 @@ func (r *OrganizationMockRepo) Delete(_ uint, org *model.Organization) error {
 type OrganizationMockErrRepo struct {
 }
 
-func (r *OrganizationMockErrRepo) FindAll(*proto.PaginationMetadata, *[]*model.Organization) error {
+func (r *OrganizationMockErrRepo) FindAll(*model.OrganizationPagination) error {
 	return nil
 }
 
