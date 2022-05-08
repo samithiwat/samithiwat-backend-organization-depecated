@@ -4,7 +4,7 @@ import "gorm.io/gorm"
 
 type Organization struct {
 	gorm.Model
-	Name        string   `json:"name"`
+	Name        string   `json:"name" gorm:"index:,unique"`
 	Description string   `json:"description"`
 	Teams       []*Team  `json:"teams"`
 	Roles       []*Role  `json:"roles" `
