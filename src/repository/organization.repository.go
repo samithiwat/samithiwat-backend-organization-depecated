@@ -2,7 +2,6 @@ package repository
 
 import (
 	"github.com/samithiwat/samithiwat-backend-organization/src/model"
-	"github.com/samithiwat/samithiwat-backend-organization/src/proto"
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
 )
@@ -15,8 +14,8 @@ func NewOrganizationRepository(db *gorm.DB) *OrganizationRepository {
 	return &OrganizationRepository{db: db}
 }
 
-func (r *OrganizationRepository) FindAll(meta *proto.PaginationMetadata, perms *[]*model.Organization) error {
-	return r.db.Scopes(Pagination(perms, meta)).Find(&perms).Count(&meta.ItemCount).Error
+func (r *OrganizationRepository) FindAll(pagination *model.OrganizationPagination) error {
+	return r.db.Scopes(Pagination(&pagination.Items, &pagination.Meta, r.db)).Find(&pagination.Items).Count(&pagination.Meta.ItemCount).Error
 }
 
 func (r *OrganizationRepository) FindOne(id uint, perm *model.Organization) error {

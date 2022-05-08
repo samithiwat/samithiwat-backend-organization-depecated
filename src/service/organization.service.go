@@ -12,7 +12,7 @@ type OrganizationService struct {
 }
 
 type OrganizationRepository interface {
-	FindAll(*proto.PaginationMetadata, *[]*model.Organization) error
+	FindAll(*model.OrganizationPagination) error
 	FindOne(uint, *model.Organization) error
 	FindMulti([]uint32, *[]*model.Organization) error
 	Create(*model.Organization) error
@@ -25,25 +25,27 @@ func NewOrganizationService(repository OrganizationRepository) *OrganizationServ
 }
 
 func (s *OrganizationService) FindAll(_ context.Context, req *proto.FindAllOrganizationRequest) (res *proto.OrganizationPaginationResponse, err error) {
-
-	meta := proto.PaginationMetadata{
-		ItemsPerPage: req.Limit,
-		CurrentPage:  req.Page,
-	}
-
-	var orgs []*model.Organization
+	var teams []*model.Organization
 	var errors []string
+
+	query := model.OrganizationPagination{
+		Items: &teams,
+		Meta: model.PaginationMetadata{
+			ItemsPerPage: req.Limit,
+			CurrentPage:  req.Page,
+		},
+	}
 
 	res = &proto.OrganizationPaginationResponse{
 		Data: &proto.OrganizationPagination{
 			Items: nil,
-			Meta:  &meta,
+			Meta:  nil,
 		},
 		Errors:     errors,
 		StatusCode: http.StatusOK,
 	}
 
-	err = s.repository.FindAll(&meta, &orgs)
+	err = s.repository.FindAll(&query)
 	if err != nil {
 		errors = append(errors, err.Error())
 		res.StatusCode = http.StatusBadRequest
@@ -52,11 +54,18 @@ func (s *OrganizationService) FindAll(_ context.Context, req *proto.FindAllOrgan
 
 	var result []*proto.Organization
 
-	for _, org := range orgs {
-		result = append(result, RawToDtoOrganization(org))
+	for _, perm := range *query.Items {
+		result = append(result, RawToDtoOrganization(perm))
 	}
 
 	res.Data.Items = result
+	res.Data.Meta = &proto.PaginationMetadata{
+		TotalItem:    query.Meta.TotalItem,
+		ItemCount:    query.Meta.ItemCount,
+		ItemsPerPage: query.Meta.ItemsPerPage,
+		TotalPage:    query.Meta.TotalPage,
+		CurrentPage:  query.Meta.CurrentPage,
+	}
 
 	return
 }

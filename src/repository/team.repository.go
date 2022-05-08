@@ -2,7 +2,6 @@ package repository
 
 import (
 	"github.com/samithiwat/samithiwat-backend-organization/src/model"
-	"github.com/samithiwat/samithiwat-backend-organization/src/proto"
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
 )
@@ -15,8 +14,8 @@ func NewTeamRepository(db *gorm.DB) *TeamRepository {
 	return &TeamRepository{db: db}
 }
 
-func (r *TeamRepository) FindAll(meta *proto.PaginationMetadata, perms *[]*model.Team) error {
-	return r.db.Scopes(Pagination(perms, meta)).Find(&perms).Count(&meta.ItemCount).Error
+func (r *TeamRepository) FindAll(pagination *model.TeamPagination) error {
+	return r.db.Scopes(Pagination(&pagination.Items, &pagination.Meta, r.db)).Find(&pagination.Items).Count(&pagination.Meta.ItemCount).Error
 }
 
 func (r *TeamRepository) FindOne(id uint, perm *model.Team) error {

@@ -12,3 +12,8 @@ type Organization struct {
 	Contact     Contact  `json:"contact"`
 	Location    Location `json:"location"`
 }
+
+type OrganizationPagination struct {
+	Items *[]*Organization
+	Meta  PaginationMetadata
+}

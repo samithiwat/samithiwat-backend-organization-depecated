@@ -19,14 +19,14 @@ var UpdateTeamReqMock proto.UpdateTeamRequest
 type TeamMockRepo struct {
 }
 
-func (r *TeamMockRepo) FindAll(meta *proto.PaginationMetadata, teams *[]*model.Team) error {
-	meta.CurrentPage = 1
-	meta.TotalPage = 1
-	meta.ItemCount = 4
-	meta.TotalItem = 4
-	meta.ItemsPerPage = 10
+func (r *TeamMockRepo) FindAll(pagination *model.TeamPagination) error {
+	pagination.Meta.CurrentPage = 1
+	pagination.Meta.TotalPage = 1
+	pagination.Meta.ItemCount = 4
+	pagination.Meta.TotalItem = 4
+	pagination.Meta.ItemsPerPage = 10
 
-	*teams = Teams
+	*pagination.Items = Teams
 	return nil
 }
 
@@ -58,7 +58,7 @@ func (r *TeamMockRepo) Delete(_ uint, team *model.Team) error {
 type TeamMockErrRepo struct {
 }
 
-func (r *TeamMockErrRepo) FindAll(*proto.PaginationMetadata, *[]*model.Team) error {
+func (r *TeamMockErrRepo) FindAll(pagination *model.TeamPagination) error {
 	return nil
 }
 
