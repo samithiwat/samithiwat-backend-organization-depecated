@@ -49,7 +49,7 @@ func (s *OrganizationService) FindAll(_ context.Context, req *proto.FindAllOrgan
 	if err != nil {
 		errors = append(errors, err.Error())
 		res.StatusCode = http.StatusBadRequest
-		return
+		return res, nil
 	}
 
 	var result []*proto.Organization
@@ -84,7 +84,7 @@ func (s *OrganizationService) FindOne(_ context.Context, req *proto.FindOneOrgan
 	if err != nil {
 		res.Errors = append(errors, err.Error())
 		res.StatusCode = http.StatusNotFound
-		return
+		return res, nil
 	}
 
 	result := RawToDtoOrganization(&org)
@@ -106,7 +106,7 @@ func (s *OrganizationService) FindMulti(_ context.Context, req *proto.FindMultiO
 	if err != nil {
 		res.Errors = append(errors, err.Error())
 		res.StatusCode = http.StatusNotFound
-		return
+		return res, nil
 	}
 
 	var result []*proto.Organization
@@ -133,7 +133,7 @@ func (s *OrganizationService) Create(_ context.Context, req *proto.CreateOrganiz
 	if err != nil {
 		res.Errors = append(errors, err.Error())
 		res.StatusCode = http.StatusUnprocessableEntity
-		return
+		return res, nil
 	}
 
 	result := RawToDtoOrganization(org)
@@ -156,7 +156,7 @@ func (s *OrganizationService) Update(_ context.Context, req *proto.UpdateOrganiz
 	if err != nil {
 		res.Errors = append(errors, err.Error())
 		res.StatusCode = http.StatusNotFound
-		return
+		return res, nil
 	}
 
 	result := RawToDtoOrganization(org)
@@ -179,7 +179,7 @@ func (s *OrganizationService) Delete(_ context.Context, req *proto.DeleteOrganiz
 	if err != nil {
 		res.Errors = append(errors, err.Error())
 		res.StatusCode = http.StatusNotFound
-		return
+		return res, nil
 	}
 
 	result := RawToDtoOrganization(&org)

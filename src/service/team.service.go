@@ -51,7 +51,7 @@ func (s *TeamService) FindAll(_ context.Context, req *proto.FindAllTeamRequest) 
 	if err != nil {
 		errors = append(errors, err.Error())
 		res.StatusCode = http.StatusBadRequest
-		return
+		return res, nil
 	}
 
 	var result []*proto.Team
@@ -86,7 +86,7 @@ func (s *TeamService) FindMulti(_ context.Context, req *proto.FindMultiTeamReque
 	if err != nil {
 		res.Errors = append(errors, err.Error())
 		res.StatusCode = http.StatusNotFound
-		return
+		return res, nil
 	}
 
 	var result []*proto.Team
@@ -113,7 +113,7 @@ func (s *TeamService) FindOne(_ context.Context, req *proto.FindOneTeamRequest) 
 	if err != nil {
 		res.Errors = append(errors, err.Error())
 		res.StatusCode = http.StatusNotFound
-		return
+		return res, nil
 	}
 
 	result := RawToDtoTeam(&t)
@@ -136,7 +136,7 @@ func (s *TeamService) Create(_ context.Context, req *proto.CreateTeamRequest) (r
 	if err != nil {
 		res.Errors = append(errors, err.Error())
 		res.StatusCode = http.StatusUnprocessableEntity
-		return
+		return res, nil
 	}
 
 	result := RawToDtoTeam(t)
@@ -159,7 +159,7 @@ func (s *TeamService) Update(_ context.Context, req *proto.UpdateTeamRequest) (r
 	if err != nil {
 		res.Errors = append(errors, err.Error())
 		res.StatusCode = http.StatusNotFound
-		return
+		return res, nil
 	}
 
 	result := RawToDtoTeam(t)
@@ -182,7 +182,7 @@ func (s *TeamService) Delete(_ context.Context, req *proto.DeleteTeamRequest) (r
 	if err != nil {
 		res.Errors = append(errors, err.Error())
 		res.StatusCode = http.StatusNotFound
-		return
+		return res, nil
 	}
 
 	result := RawToDtoTeam(&t)
